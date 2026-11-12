@@ -224,6 +224,14 @@ dialog#sheet[open]{animation:drop .22s ease}
 .sh-cta{display:grid;gap:10px}
 .sdots{display:none}
 #mbar{display:none}
+/* video */
+.vbtn{border-color:transparent;background:transparent}
+.vbtn:hover{background:var(--hover)}
+.vbtn .dur{font-weight:600;color:var(--faint);font-size:13px}
+dialog#vd{padding:0;border:0;background:#000;width:min(1280px,94vw);max-width:94vw;border-radius:14px;overflow:visible}
+dialog#vd::backdrop{background:rgba(20,18,16,.85)}
+dialog#vd video{display:block;width:100%;height:auto;border-radius:14px;background:#000}
+.vclose{position:absolute;top:-56px;right:0;width:44px;height:44px;border-radius:50%;border:0;background:#fffefb;color:#2b2925;cursor:pointer;display:grid;place-items:center}
 /* lightbox */
 dialog#lb{padding:0;border:0;background:transparent;max-width:min(1600px,96vw);max-height:94vh}
 dialog#lb::backdrop{background:rgba(20,18,16,.8)}
@@ -337,6 +345,7 @@ dialog#lb button{position:fixed;top:14px;right:14px;width:44px;height:44px;borde
    <div class="ctas">
     <a class="btn pri" href="https://archlinux.taila38d1a.ts.net:8443/sapb1/try" target="_blank" rel="noopener"><svg class="ico" style="fill:currentColor;stroke:none"><use href="#i-play"/></svg>Try the live demo</a>
     <a class="btn" href="https://archlinux.taila38d1a.ts.net:8443/portal/guest" target="_blank" rel="noopener">Open the full app as a guest<svg class="ico"><use href="#i-ext"/></svg></a>
+    <button class="btn vbtn" type="button" data-video><svg class="ico" style="fill:currentColor;stroke:none"><use href="#i-play"/></svg>Watch the video <span class="dur">1:32</span></button>
    </div>
    <div class="facts">
     <span><svg class="ico"><use href="#i-check"/></svg>SAP B1 10.0 on SQL Server</span>
@@ -525,6 +534,7 @@ dialog#lb button{position:fixed;top:14px;right:14px;width:44px;height:44px;borde
    <div class="ctas" style="justify-content:center">
     <a class="btn pri" href="mailto:idhamproaqw98@gmail.com?subject=Pylon%20AI%20demo"><svg class="ico"><use href="#i-mail"/></svg>Book a demo</a>
     <a class="btn" href="https://archlinux.taila38d1a.ts.net:8443/sapb1/try" target="_blank" rel="noopener">Try the live demo<svg class="ico"><use href="#i-ext"/></svg></a>
+    <button class="btn" type="button" data-video><svg class="ico" style="fill:currentColor;stroke:none"><use href="#i-play"/></svg>Watch the video</button>
    </div>
    <p class="mail">Or email <a href="mailto:idhamproaqw98@gmail.com">idhamproaqw98@gmail.com</a></p>
   </div>
@@ -540,6 +550,8 @@ dialog#lb button{position:fixed;top:14px;right:14px;width:44px;height:44px;borde
 </footer>
 
 <div id="mbar" aria-label="Quick actions" inert><a class="btn" href="https://archlinux.taila38d1a.ts.net:8443/sapb1/try" target="_blank" rel="noopener">Try the demo</a><a class="btn pri" href="#contact">Book a demo</a></div>
+
+<dialog id="vd" aria-label="Pylon AI video"><button type="button" class="vclose" aria-label="Close video"><svg class="ico"><use href="#i-x"/></svg></button><video controls playsinline preload="none" poster="assets/video/poster.jpg" width="1920" height="1080"></video></dialog>
 
 <dialog id="lb" aria-label="Enlarged screenshot"><button type="button" aria-label="Close"><svg class="ico"><use href="#i-x"/></svg></button><img alt=""></dialog>
 
@@ -559,6 +571,11 @@ dialog#lb button{position:fixed;top:14px;right:14px;width:44px;height:44px;borde
   lbi.src=img.dataset.full&&!(dark&&src.includes('dark'))?img.dataset.full:src.replace('-960','');lbi.alt=img.alt;lb.showModal();}));
  lb.addEventListener('click',e=>{if(e.target!==lbi)lb.close()});
 
+ // video
+ const vd=document.getElementById('vd'),vv=vd.querySelector('video');
+ document.querySelectorAll('[data-video]').forEach(b=>b.addEventListener('click',()=>{if(!vv.src){vv.preload='auto';vv.src='assets/video/pylon-ai.mp4'}vd.showModal();vv.play().catch(()=>{})}));
+ vd.addEventListener('close',()=>vv.pause());
+ vd.addEventListener('click',e=>{if(e.target===vd||e.target.closest('.vclose'))vd.close()});
  // phone menu
  const sheet=document.getElementById('sheet'),mb=document.getElementById('menuBtn');
  mb.addEventListener('click',()=>sheet.showModal());
