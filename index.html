@@ -1,0 +1,521 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pylon AI · AI assistant for SAP Business One</title>
+<meta name="description" content="Pylon AI is an AI assistant for SAP Business One: ask in plain words, get answers, red flags and forecasts from your own B1, on your own server.">
+<meta name="theme-color" content="#f7f5f0" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#262523" media="(prefers-color-scheme: dark)">
+<meta property="og:title" content="Pylon AI · AI assistant for SAP Business One">
+<meta property="og:description" content="Ask in plain words. Get answers, red flags and forecasts from your own SAP Business One, on your own server.">
+<meta property="og:image" content="https://ezzzy01.github.io/pylon/assets/og.png">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<style>
+:root{color-scheme:light;
+ --page:#f7f5f0;--side:#efece5;--card:#fffefb;--sunken:#ebe7de;--hover:#e9e5dc;
+ --line:#e3ded3;--line2:#c9c2b5;--ink:#2b2925;--muted:#6e6862;--faint:#8f8981;
+ --accent:#b5532c;--accent-h:#9e4724;--accent-ink:#fff;--accent-soft:#f4e3da;--accent-text:#93401f;
+ --good:#2f7a45;--good-soft:#e3f0e5;--warn:#96590a;--warn-soft:#f8ead2;--bad:#b42318;--bad-soft:#f9e1de;--info:#2f5f8a;--info-soft:#e1eaf3;
+ --t-sales:#2f5f8a;--t-stock:#2f7a45;--t-money:#a5521f;--t-supp:#6b4c7a;--t-mgmt:#5a6470;
+ --sans:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+ --serif:"Source Serif 4","Source Serif Pro","Iowan Old Style",Charter,"Noto Serif",Georgia,serif;
+ --r:10px;--r-lg:14px;--sh1:0 1px 2px rgba(43,41,37,.06),0 0 0 1px var(--line);--sh2:0 18px 48px rgba(43,41,37,.16),0 0 0 1px var(--line);
+ --focus:0 0 0 3px color-mix(in srgb,var(--accent) 30%,transparent);--max:1160px}
+@media (prefers-color-scheme:dark){:root{color-scheme:dark;
+ --page:#262523;--side:#1f1e1c;--card:#2e2c29;--sunken:#1f1e1c;--hover:#383632;
+ --line:#3d3a36;--line2:#57534c;--ink:#ece8e1;--muted:#a8a299;--faint:#8a847b;
+ --accent:#e07b52;--accent-h:#ea9271;--accent-ink:#1f1e1c;--accent-soft:#4a3329;--accent-text:#f0a583;
+ --good:#7ccb92;--good-soft:#22362a;--warn:#e3a54a;--warn-soft:#3d3020;--bad:#f08a80;--bad-soft:#452824;--info:#8bb8e8;--info-soft:#24323f;
+ --t-sales:#8bb8e8;--t-stock:#7ccb92;--t-money:#e8a070;--t-supp:#c3a3d6;--t-mgmt:#a9b2bc;
+ --sh1:0 0 0 1px var(--line);--sh2:0 18px 48px rgba(0,0,0,.5),0 0 0 1px var(--line2)}}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:72px;-webkit-text-size-adjust:100%}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{animation:none!important;transition:none!important}}
+body{margin:0;background:var(--page);color:var(--ink);font:16px/1.6 var(--sans);-webkit-font-smoothing:antialiased}
+img{max-width:100%;height:auto;display:block}
+a{color:inherit}
+:focus-visible{outline:0;box-shadow:var(--focus);border-radius:6px}
+.wrap{max-width:var(--max);margin:0 auto;padding:0 24px}
+h1,h2,h3{margin:0;line-height:1.15;letter-spacing:-.01em}
+h2{font:600 clamp(28px,4vw,40px)/1.15 var(--serif)}
+h3{font-size:17px;font-weight:700}
+p{margin:0}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--accent-text)}
+.lead{color:var(--muted);font-size:18px;max-width:62ch}
+section{padding:96px 0}
+.shead{display:grid;gap:14px;margin-bottom:44px;max-width:760px}
+.mk{color:var(--ink)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:46px;padding:0 20px;border:1px solid var(--line2);border-radius:var(--r);
+ background:var(--card);color:var(--ink);font:600 15px/1 var(--sans);text-decoration:none;cursor:pointer;white-space:nowrap;transition:background .12s,border-color .12s}
+.btn:hover{background:var(--hover)}
+.btn.pri{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.btn.pri:hover{background:var(--accent-h);border-color:var(--accent-h)}
+.btn svg{width:18px;height:18px;flex:none}
+.ico{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none}
+
+/* top bar */
+.shell{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--page) 88%,transparent);backdrop-filter:saturate(1.4) blur(10px);-webkit-backdrop-filter:saturate(1.4) blur(10px);border-bottom:1px solid transparent;transition:border-color .2s}
+.shell.sc{border-bottom-color:var(--line)}
+.shell .wrap{display:flex;align-items:center;gap:24px;height:64px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:18px;text-decoration:none;white-space:nowrap}
+.brand svg{width:30px;height:30px}
+.shell nav{display:flex;gap:4px;margin-left:auto}
+.shell nav a{padding:10px 12px;border-radius:8px;text-decoration:none;color:var(--muted);font-size:14.5px;font-weight:600}
+.shell nav a:hover{color:var(--ink);background:var(--hover)}
+.shell .btn{min-height:40px;padding:0 16px;font-size:14px}
+
+/* hero */
+.hero{padding:72px 0 40px;overflow:hidden}
+.hero .wrap{display:grid;gap:56px}
+.htext{display:grid;gap:22px;max-width:820px;min-width:0}
+.hero .wrap>*{min-width:0}
+.hero h1{font:600 clamp(40px,6.4vw,72px)/1.04 var(--serif);letter-spacing:-.02em}
+.hero h1 em{font-style:normal;color:var(--accent-text)}
+.hero .lead{font-size:clamp(17px,2vw,20px)}
+.ctas{display:flex;flex-wrap:wrap;gap:12px}
+.facts{display:flex;flex-wrap:wrap;gap:8px 22px;color:var(--muted);font-size:14px;font-weight:600}
+.facts span{display:inline-flex;align-items:center;gap:7px}
+.facts .ico{width:17px;height:17px;color:var(--good)}
+.stage{position:relative}
+.frame{border-radius:var(--r-lg);overflow:hidden;box-shadow:var(--sh2);background:var(--card)}
+.frame .bar{display:flex;align-items:center;gap:6px;height:30px;padding:0 12px;background:var(--side);border-bottom:1px solid var(--line)}
+.frame .bar i{width:10px;height:10px;border-radius:50%;background:var(--line2)}
+.frame .bar b{margin-left:10px;font-size:13px;font-weight:600;color:var(--faint)}
+.float{position:absolute;right:-12px;bottom:-28px;width:min(250px,26%);border-radius:26px;overflow:hidden;box-shadow:var(--sh2);border:6px solid var(--ink);background:var(--ink)}
+.float img{border-radius:20px}
+.phone-hero{display:none}
+
+/* problem */
+.pain{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.pain .card{display:grid;gap:12px;align-content:start}
+.card{background:var(--card);border-radius:var(--r-lg);box-shadow:var(--sh1);padding:26px}
+.pain .was{color:var(--muted);font-size:15px}
+.pain .now{display:flex;gap:10px;font-weight:600}
+.pain .now .ico{color:var(--accent);margin-top:3px}
+.num{font:600 15px var(--sans);color:var(--faint)}
+
+/* features */
+.feats{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.feat{display:grid;gap:12px;align-content:start}
+.feat .tag{display:inline-flex;align-items:center;justify-content:center;width:42px;height:42px;border-radius:12px;background:var(--sunken)}
+.feat .tag .ico{width:21px;height:21px}
+.feat p{color:var(--muted);font-size:15px}
+.feat ul{margin:0;padding:0;list-style:none;display:grid;gap:7px;font-size:14.5px}
+.feat li{display:flex;gap:9px}
+.feat li::before{content:"";flex:none;width:6px;height:6px;border-radius:50%;background:var(--line2);margin-top:9px}
+.feat.wide{grid-column:span 3;grid-template-columns:1.05fr 1fr;gap:36px;align-items:center;padding:30px}
+.feat.wide .frame{box-shadow:var(--sh1)}
+.c-sales{color:var(--t-sales)}.c-stock{color:var(--t-stock)}.c-money{color:var(--t-money)}.c-supp{color:var(--t-supp)}.c-mgmt{color:var(--t-mgmt)}.c-acc{color:var(--accent)}
+.flags{display:flex;flex-wrap:wrap;gap:8px}
+.badge{display:inline-block;border-radius:6px;padding:3px 9px;font-size:13px;font-weight:700}
+.b-bad{background:var(--bad-soft);color:var(--bad)}.b-warn{background:var(--warn-soft);color:var(--warn)}.b-good{background:var(--good-soft);color:var(--good)}.b-info{background:var(--info-soft);color:var(--info)}
+
+/* screens */
+.alt{background:var(--side);border-block:1px solid var(--line)}
+.tabs{display:flex;gap:6px;overflow-x:auto;padding:4px;margin:0 0 22px;background:var(--sunken);border-radius:12px;width:max-content;max-width:100%;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{border:0;background:none;color:var(--muted);font:600 14.5px var(--sans);padding:0 16px;min-height:42px;border-radius:9px;cursor:pointer;white-space:nowrap}
+.tab[aria-selected=true]{background:var(--card);color:var(--ink);box-shadow:var(--sh1)}
+.shot{display:grid;grid-template-columns:1fr 300px;gap:32px;align-items:center}
+.shot .frame{cursor:zoom-in}
+.shot .cap{display:grid;gap:12px}
+.shot .cap p{color:var(--muted)}
+.shot[hidden]{display:none}
+.phones{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;max-width:900px}
+.phones figure{margin:0;display:grid;gap:10px;text-align:center;font-size:14px;color:var(--muted);font-weight:600}
+.phones img{border-radius:22px;border:5px solid var(--ink);background:var(--ink);box-shadow:var(--sh1);cursor:zoom-in}
+
+/* how */
+.flow{display:grid;grid-template-columns:1fr auto 1.35fr auto 1fr;gap:14px;align-items:stretch}
+.node{display:grid;gap:12px;align-content:start}
+.node h3{display:flex;align-items:center;gap:10px}
+.node p,.node li{color:var(--muted);font-size:14.5px}
+.node ul{margin:0;padding-left:18px;display:grid;gap:4px}
+.node.core{border:2px solid var(--accent);box-shadow:none}
+.arrow{display:grid;place-items:center;color:var(--faint);gap:6px;font-size:13px;font-weight:700;text-align:center;letter-spacing:.03em;text-transform:uppercase}
+.arrow .ico{width:28px;height:28px}
+.steps{display:grid;gap:0;margin:0;padding:0;list-style:none}
+.steps li{display:grid;grid-template-columns:64px 1fr;gap:12px;padding:10px 0;border-top:1px solid var(--line);font-size:14.5px}
+.steps li:first-child{border-top:0}
+.steps b{font-variant-numeric:tabular-nums;color:var(--ink)}
+.day{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:20px}
+.day .card{display:grid;gap:8px}
+.day .t{font:600 30px var(--serif);color:var(--accent-text)}
+.day p{color:var(--muted);font-size:15px}
+
+/* security */
+.sec{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.sec .card{display:grid;gap:10px;align-content:start}
+.sec .card p{color:var(--muted);font-size:15px}
+.sec .ico{color:var(--good);width:24px;height:24px}
+
+/* companies */
+.split{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center}
+.split .shead{margin:0}
+.cos{display:grid;gap:10px}
+.co{display:flex;align-items:center;gap:14px;padding:14px 18px;background:var(--card);border-radius:12px;box-shadow:var(--sh1)}
+.co .dot{width:36px;height:36px;border-radius:9px;display:grid;place-items:center;font-weight:800;font-size:14px;color:#fff;flex:none}
+.co div{display:grid;line-height:1.35}
+.co small{color:var(--muted);font-size:13.5px}
+.co .lk{margin-left:auto;color:var(--good)}
+.checks{margin:0;padding:0;list-style:none;display:grid;gap:10px}
+.checks li{display:flex;gap:10px}
+.checks .ico{color:var(--good);margin-top:3px}
+
+/* rollout */
+.roll{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;counter-reset:r;margin:0;padding:0;list-style:none}
+.roll li{display:grid;gap:8px;align-content:start;position:relative;padding-top:58px}
+.roll li::before{counter-increment:r;content:counter(r);position:absolute;top:0;left:0;width:42px;height:42px;border-radius:50%;display:grid;place-items:center;background:var(--accent-soft);color:var(--accent-text);font:700 17px var(--sans)}
+.roll li::after{content:"";position:absolute;top:21px;left:54px;right:-8px;height:2px;background:var(--line)}
+.roll li:last-child::after{display:none}
+.roll p{color:var(--muted);font-size:15px}
+
+/* plans */
+.plans{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;align-items:stretch}
+.plan{display:grid;gap:16px;grid-template-rows:auto auto 1fr auto}
+.plan.hl{border:2px solid var(--accent);box-shadow:var(--sh2)}
+.plan .who{font-size:14.5px;color:var(--muted)}
+.plan .size{font:600 26px var(--serif)}
+.plan .pill{justify-self:start;font-size:13px;font-weight:700;padding:3px 10px;border-radius:999px;background:var(--accent-soft);color:var(--accent-text)}
+.plan ul{margin:0;padding:0;list-style:none;display:grid;gap:9px;font-size:15px;align-content:start}
+.plan li{display:flex;gap:9px}
+.plan li .ico{width:18px;height:18px;color:var(--good);margin-top:3px}
+.plan .btn{width:100%}
+.allp{margin-top:18px;color:var(--muted);font-size:15px;text-align:center}
+
+/* faq */
+.faq{display:grid;gap:12px;max-width:860px}
+.faq details{background:var(--card);border-radius:12px;box-shadow:var(--sh1)}
+.faq summary{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:18px 22px;font-weight:700;min-height:56px}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary .ico{transition:transform .2s;color:var(--faint)}
+.faq details[open] summary .ico{transform:rotate(45deg)}
+.faq details p{padding:0 22px 20px;color:var(--muted)}
+
+/* cta */
+.cta{text-align:center}
+.cta .card{display:grid;justify-items:center;gap:20px;padding:56px 28px;background:var(--ink);color:var(--page);box-shadow:none}
+.cta h2{max-width:20ch}
+.cta p{color:color-mix(in srgb,var(--page) 75%,var(--ink));max-width:56ch}
+.cta .btn{border-color:color-mix(in srgb,var(--page) 30%,transparent);background:transparent;color:var(--page)}
+.cta .btn:hover{background:color-mix(in srgb,var(--page) 10%,transparent)}
+.cta .btn.pri{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.cta .mail{font-size:15px;color:color-mix(in srgb,var(--page) 75%,var(--ink))}
+.cta .mail a{color:var(--page);font-weight:700}
+.cta svg.mk{width:54px;height:54px}.cta svg.mk{color:var(--page)}
+footer{padding:36px 0 48px;color:var(--faint);font-size:13.5px}
+footer .wrap{display:flex;flex-wrap:wrap;gap:12px 28px;justify-content:space-between}
+
+/* lightbox */
+dialog#lb{padding:0;border:0;background:transparent;max-width:min(1600px,96vw);max-height:94vh}
+dialog#lb::backdrop{background:rgba(20,18,16,.8)}
+dialog#lb img{max-height:90vh;width:auto;border-radius:12px;margin:auto}
+dialog#lb button{position:fixed;top:14px;right:14px;width:44px;height:44px;border-radius:50%;border:0;background:#fffefb;color:#2b2925;cursor:pointer;display:grid;place-items:center}
+
+/* reveal */
+.rv{opacity:0;transform:translateY(14px);transition:opacity .6s ease,transform .6s ease}
+.rv.in{opacity:1;transform:none}
+
+@media (max-width:1000px){
+ .feats,.sec{grid-template-columns:1fr 1fr}.feat.wide{grid-column:span 2;grid-template-columns:1fr}
+ .flow{grid-template-columns:1fr}.arrow{padding:4px 0}.arrow .ico{transform:rotate(90deg)}
+ .shot{grid-template-columns:1fr}.split{grid-template-columns:1fr}
+ .roll{grid-template-columns:1fr 1fr;row-gap:32px}.roll li::after{display:none}
+ .plans{grid-template-columns:1fr;max-width:520px}
+ .shell nav{display:none}.shell .btn{margin-left:auto}
+}
+@media (max-width:760px){
+ section{padding:64px 0}.wrap{padding:0 16px}.hero{padding:40px 0 24px}.hero .wrap{gap:36px}
+ .pain,.feats,.sec,.day{grid-template-columns:1fr}.feat.wide{grid-column:auto}
+ .card{padding:22px}.ctas .btn{flex:1 1 100%;white-space:normal;text-align:center}
+ .brand{min-height:44px}.cta .mail a{display:inline-block;padding:12px 0}
+ .stage .frame,.float{display:none}.phone-hero{display:block;width:min(270px,78%);margin:0 auto;border-radius:30px;border:6px solid var(--ink);background:var(--ink);box-shadow:var(--sh2)}
+ .phones{grid-template-columns:1fr 1fr}
+ .roll{grid-template-columns:1fr}
+ .shell .brand span{font-size:17px}
+}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+ <symbol id="mark" viewBox="0 0 48 48"><polygon fill="currentColor" points="5,42 21,42 21,8 10,8"/><polygon fill="currentColor" points="27,42 43,42 38,8 27,8"/><rect style="fill:var(--accent)" x="21" y="20" width="6" height="22"/></symbol>
+ <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol>
+ <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></symbol>
+ <symbol id="i-ext" viewBox="0 0 24 24"><path d="M15 3h6v6M10 14 21 3M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></symbol>
+ <symbol id="i-chat" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></symbol>
+ <symbol id="i-box" viewBox="0 0 24 24"><path d="M21 8 12 3 3 8v8l9 5 9-5z"/><path d="m3 8 9 5 9-5M12 13v8"/></symbol>
+ <symbol id="i-flag" viewBox="0 0 24 24"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1zM4 22v-7"/></symbol>
+ <symbol id="i-coins" viewBox="0 0 24 24"><circle cx="8" cy="8" r="6"/><path d="M18.09 10.37A6 6 0 1 1 10.34 18M7 6h1v4M16.71 13.88l.7.71-2.82 2.82"/></symbol>
+ <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></symbol>
+ <symbol id="i-file" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/></symbol>
+ <symbol id="i-book" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V2H6.5A2.5 2.5 0 0 0 4 4.5z"/><path d="M4 19.5A2.5 2.5 0 0 0 6.5 22H20v-5"/></symbol>
+ <symbol id="i-pen" viewBox="0 0 24 24"><path d="M12 20h9M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4z"/></symbol>
+ <symbol id="i-plug" viewBox="0 0 24 24"><path d="M12 22v-5M9 8V2M15 8V2M18 8v5a4 4 0 0 1-4 4h-4a4 4 0 0 1-4-4V8z"/></symbol>
+ <symbol id="i-db" viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/><path d="M3 12c0 1.66 4 3 9 3s9-1.34 9-3"/></symbol>
+ <symbol id="i-server" viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/><path d="M6 6h.01M6 18h.01"/></symbol>
+ <symbol id="i-users" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></symbol>
+ <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></symbol>
+ <symbol id="i-lock" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></symbol>
+ <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></symbol>
+ <symbol id="i-build" viewBox="0 0 24 24"><path d="M3 21h18M5 21V7l8-4v18M19 21V11l-6-4M9 9v.01M9 12v.01M9 15v.01M9 18v.01"/></symbol>
+ <symbol id="i-key" viewBox="0 0 24 24"><path d="m21 2-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.78 7.78 5.5 5.5 0 0 1 7.78-7.78zm0 0L15.5 7.5m0 0 3 3L22 7l-3-3m-3.5 3.5L19 4"/></symbol>
+ <symbol id="i-wifi" viewBox="0 0 24 24"><path d="M2 2l20 20M8.5 16.43a5 5 0 0 1 7 0M2 8.82a15 15 0 0 1 4.17-2.65M10.66 5c4.01-.36 8.14.9 11.34 3.76M16.85 11.25a10 10 0 0 1 2.22 1.68M5 13a10 10 0 0 1 5.24-2.76M12 20h.01"/></symbol>
+ <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+ <symbol id="i-x" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></symbol>
+ <symbol id="i-mail" viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/></symbol>
+ <symbol id="i-play" viewBox="0 0 24 24"><path d="m6 3 14 9-14 9z"/></symbol>
+</svg>
+
+<header class="shell" id="top">
+ <div class="wrap">
+  <a class="brand" href="#top" aria-label="Pylon AI, back to top"><svg class="mk" aria-hidden="true"><use href="#mark"/></svg><span>Pylon AI</span></a>
+  <nav aria-label="Sections">
+   <a href="#features">Features</a><a href="#screens">Screens</a><a href="#how">How it works</a><a href="#security">Security</a><a href="#plans">Plans</a><a href="#faq">FAQ</a>
+  </nav>
+  <a class="btn pri" href="#contact">Book a demo</a>
+ </div>
+</header>
+
+<main>
+<section class="hero">
+ <div class="wrap">
+  <div class="htext">
+   <span class="eyebrow">AI assistant for SAP Business One</span>
+   <h1>The way into your <em>SAP Business One</em> data.</h1>
+   <p class="lead">Ask in plain words and get answers, red flags and forecasts from your own B1, on your own server. Pylon AI reads B1 and never changes it on its own.</p>
+   <div class="ctas">
+    <a class="btn pri" href="https://archlinux.taila38d1a.ts.net:8443/sapb1/try" target="_blank" rel="noopener"><svg class="ico" style="fill:currentColor;stroke:none"><use href="#i-play"/></svg>Try the live demo</a>
+    <a class="btn" href="https://archlinux.taila38d1a.ts.net:8443/portal/guest" target="_blank" rel="noopener">Open the full app as a guest<svg class="ico"><use href="#i-ext"/></svg></a>
+   </div>
+   <div class="facts">
+    <span><svg class="ico"><use href="#i-check"/></svg>SAP B1 10.0 on SQL Server</span>
+    <span><svg class="ico"><use href="#i-check"/></svg>Runs on your own server</span>
+    <span><svg class="ico"><use href="#i-check"/></svg>Read-only by default</span>
+    <span><svg class="ico"><use href="#i-check"/></svg>Many companies, one place</span>
+   </div>
+  </div>
+  <div class="stage">
+   <div class="frame"><div class="bar"><i></i><i></i><i></i><b>Pylon AI · demo company</b></div>
+    <picture><source media="(prefers-color-scheme: dark)" srcset="assets/img/12-answer-dark.webp"><img src="assets/img/02-answer-table.webp" width="1600" height="1000" alt="Pylon AI answering who owes the most overdue money, with a table of customers, invoices and days late" fetchpriority="high"></picture>
+   </div>
+   <div class="float"><img src="assets/img/21-phone-answer.webp" width="780" height="1688" alt="The same answer on a phone" loading="lazy"></div>
+   <img class="phone-hero" src="assets/img/21-phone-answer.webp" width="780" height="1688" alt="Pylon AI on a phone: an answer with a table of customers" loading="lazy">
+  </div>
+ </div>
+</section>
+
+<section id="why">
+ <div class="wrap">
+  <div class="shead rv"><span class="eyebrow">Why Pylon AI</span><h2>Everything is in B1. Getting answers out of it shouldn't take a day.</h2></div>
+  <div class="pain">
+   <div class="card rv"><span class="num">01</span><h3>Reports wait for a person</h3><p class="was">Someone exports, filters and builds a spreadsheet every time a manager has a question.</p><p class="now"><svg class="ico"><use href="#i-arrow"/></svg>Ask in a sentence, get the table or chart in seconds, ready for Excel.</p></div>
+   <div class="card rv"><span class="num">02</span><h3>Problems are found too late</h3><p class="was">A stock-out, a duplicate invoice or a sale below cost is noticed after the money is gone.</p><p class="now"><svg class="ico"><use href="#i-arrow"/></svg>Every night Pylon checks stock, prices and payments and shows what needs attention.</p></div>
+   <div class="card rv"><span class="num">03</span><h3>Managers can't see the whole picture</h3><p class="was">Sales, stock and cash live on different screens, and the numbers don't always match.</p><p class="now"><svg class="ico"><use href="#i-arrow"/></svg>A morning briefing and a live dashboard, with the same figures as B1.</p></div>
+  </div>
+ </div>
+</section>
+
+<section id="features" class="alt">
+ <div class="wrap">
+  <div class="shead rv"><span class="eyebrow">What it does</span><h2>One assistant for sales, stock, money and management.</h2><p class="lead">Pylon AI works through your B1 every night and is ready for questions all day.</p></div>
+  <div class="feats">
+   <div class="card feat wide rv">
+    <div style="display:grid;gap:14px">
+     <span class="tag c-acc"><svg class="ico"><use href="#i-chat"/></svg></span>
+     <h3 style="font:600 28px/1.2 var(--serif)">Ask anything, in plain words</h3>
+     <p>“Who owes us the most?” “Which items do I need to reorder?” “Show monthly sales as a chart.” Pylon looks it up live in B1 and answers with the table, chart or document you need. Names in the answer open the customer, item or document.</p>
+     <ul><li>Tables with filters and totals, charts, one-click Excel</li><li>Answers become documents: Word, PDF, Excel</li><li>Every answer says where it came from and how fresh it is</li></ul>
+    </div>
+    <div class="frame"><picture><source media="(prefers-color-scheme: dark)" srcset="assets/img/12-answer-dark-960.webp"><img src="assets/img/03-answer-chart-960.webp" width="960" height="600" alt="An answer with a chart of monthly sales" loading="lazy"></picture></div>
+   </div>
+   <div class="card feat rv"><span class="tag c-stock"><svg class="ico"><use href="#i-box"/></svg></span><h3>Stock planning</h3><p>Know what to order before it runs out.</p>
+    <ul><li>Weekly forecast per item and warehouse, including production use</li><li>Shortage projection, reorder point, safety stock and order quantity</li><li>Warnings for items that will stop production</li></ul>
+    <div class="flags"><span class="badge b-bad">LINE STOP RISK</span><span class="badge b-warn">STOCKOUT RISK</span></div></div>
+   <div class="card feat rv"><span class="tag c-supp"><svg class="ico"><use href="#i-flag"/></svg></span><h3>Transaction checks</h3><p>Red flags every night, each with the money at stake.</p>
+    <ul><li>Unusual prices and sales below cost</li><li>Duplicate supplier invoices</li><li>Billed more than received, price above the PO, invoices without a PO</li><li>Supplier bank detail changes, credit note spikes, odd manual journals</li></ul></div>
+   <div class="card feat rv"><span class="tag c-money"><svg class="ico"><use href="#i-coins"/></svg></span><h3>Money</h3><p>Cash and margin, ahead of time.</p>
+    <ul><li>13-week cash forecast from each partner's real payment habits</li><li>Customers likely to pay late</li><li>Margins by customer, item and salesperson, with trend</li><li>Customers who stopped ordering, items that sell together</li></ul></div>
+   <div class="card feat rv"><span class="tag c-mgmt"><svg class="ico"><use href="#i-sun"/></svg></span><h3>Morning briefing</h3><p>At 07:00, what changed and what needs a decision today, plus a watch on market news for the product categories you depend on.</p></div>
+   <div class="card feat rv"><span class="tag c-sales"><svg class="ico"><use href="#i-file"/></svg></span><h3>Reports and Inbox</h3><p>Ready-made reports for sales, stock and money, run on demand or on a schedule into each person's Inbox. A management pack as PDF and Excel in one click.</p></div>
+   <div class="card feat rv"><span class="tag c-supp"><svg class="ico"><use href="#i-book"/></svg></span><h3>Your own documents</h3><p>Price lists, contracts and policies (PDF, Word, Excel) become something you can ask about. They stay on your server.</p></div>
+   <div class="card feat rv"><span class="tag c-acc"><svg class="ico"><use href="#i-pen"/></svg></span><h3>Drafts in B1, with your yes</h3><p>Optional: Pylon prepares sales and purchase documents, transfers or payments, checks them against B1 and shows a preview. Only after a person says yes does it create a B1 <em>draft</em>, which someone checks and adds.</p></div>
+   <div class="card feat rv"><span class="tag c-stock"><svg class="ico"><use href="#i-wifi"/></svg></span><h3>Works when SAP is off</h3><p>A local copy keeps answering when the SAP server is down or unreachable, and every answer says when that copy was made.</p></div>
+   <div class="card feat rv"><span class="tag c-mgmt"><svg class="ico"><use href="#i-users"/></svg></span><h3>Built for teams</h3><p>Roles decide who sees sales, stock, money or management figures. Projects, shared chats, saved prompts, and a phone-friendly layout.</p></div>
+  </div>
+ </div>
+</section>
+
+<section id="screens">
+ <div class="wrap">
+  <div class="shead rv"><span class="eyebrow">See it</span><h2>A calm, familiar workspace.</h2><p class="lead">Real screens from the demo company (SAP's sample database). Click a picture to enlarge it.</p></div>
+  <div class="tabs" role="tablist" aria-label="Screens">
+   <button class="tab" role="tab" aria-selected="true" aria-controls="s1" id="t1">Chat</button>
+   <button class="tab" role="tab" aria-selected="false" aria-controls="s2" id="t2">Dashboard</button>
+   <button class="tab" role="tab" aria-selected="false" aria-controls="s3" id="t3">Business data</button>
+   <button class="tab" role="tab" aria-selected="false" aria-controls="s4" id="t4">Customer</button>
+   <button class="tab" role="tab" aria-selected="false" aria-controls="s5" id="t5">Reports</button>
+   <button class="tab" role="tab" aria-selected="false" aria-controls="s6" id="t6">SAP offline</button>
+  </div>
+  <div class="shot" role="tabpanel" id="s1" aria-labelledby="t1"><div class="frame"><img src="assets/img/04-answer-orders-960.webp" data-full="assets/img/04-answer-orders.webp" width="960" height="600" alt="Open sales orders listed in an answer" loading="lazy"></div><div class="cap"><h3>Answers you can act on</h3><p>Open orders with their status, late deliveries flagged, and a next step suggested. Copy it, filter it or send it to Excel.</p></div></div>
+  <div class="shot" role="tabpanel" id="s2" aria-labelledby="t2" hidden><div class="frame"><picture><source media="(prefers-color-scheme: dark)" srcset="assets/img/11-dashboard-dark-960.webp"><img src="assets/img/05-dashboard-960.webp" data-full="assets/img/05-dashboard.webp" width="960" height="600" alt="Dashboard with sales, gross profit, money owed, open orders and stock to act on" loading="lazy"></picture></div><div class="cap"><h3>The business on one page</h3><p>Sales, gross profit, what customers owe and how late, open orders and stock to act on, compared with the same days last year. Every tile opens its documents.</p></div></div>
+  <div class="shot" role="tabpanel" id="s3" aria-labelledby="t3" hidden><div class="frame"><img src="assets/img/06-business-data-960.webp" data-full="assets/img/06-business-data.webp" width="960" height="600" alt="Customer list with amounts owed and age of debt" loading="lazy"></div><div class="cap"><h3>Business data, cleaned up</h3><p>Customers, suppliers, items and documents with useful filters: who owes us, overdue, by group or sales employee.</p></div></div>
+  <div class="shot" role="tabpanel" id="s4" aria-labelledby="t4" hidden><div class="frame"><img src="assets/img/07-customer-960.webp" data-full="assets/img/07-customer.webp" width="960" height="600" alt="Customer page with key figures and debt by age" loading="lazy"></div><div class="cap"><h3>Everything about a customer</h3><p>Key figures, what they owe by age, recent documents and trends, in the layout SAP users already know.</p></div></div>
+  <div class="shot" role="tabpanel" id="s5" aria-labelledby="t5" hidden><div class="frame"><img src="assets/img/08-reports-960.webp" data-full="assets/img/08-reports.webp" width="960" height="600" alt="Reports page with sales, forecast, customer insights and reorder list" loading="lazy"></div><div class="cap"><h3>Reports on a schedule</h3><p>Run a report now or schedule it daily, weekly or monthly. Each run is kept as a version and lands in your Inbox.</p></div></div>
+  <div class="shot" role="tabpanel" id="s6" aria-labelledby="t6" hidden><div class="frame"><img src="assets/img/10-offline-960.webp" data-full="assets/img/10-offline.webp" width="960" height="600" alt="Items list with line stop and stockout risk, while SAP B1 can't be reached" loading="lazy"></div><div class="cap"><h3>Still working when SAP isn't</h3><p>When the SAP server is off, Pylon answers from its saved copy and says so clearly. Here: items at line-stop and stock-out risk.</p></div></div>
+
+  <div class="shead rv" style="margin:72px 0 28px"><h3 style="font:600 26px var(--serif)">On the phone, too.</h3></div>
+  <div class="phones rv">
+   <figure><img src="assets/img/20-phone-start.webp" width="780" height="1688" alt="Start page on a phone" loading="lazy"><figcaption>Start</figcaption></figure>
+   <figure><img src="assets/img/21-phone-answer.webp" width="780" height="1688" alt="An answer on a phone" loading="lazy"><figcaption>Answer</figcaption></figure>
+   <figure><img src="assets/img/22-phone-dashboard.webp" width="780" height="1688" alt="Dashboard on a phone" loading="lazy"><figcaption>Dashboard</figcaption></figure>
+   <figure><img src="assets/img/23-phone-customer.webp" width="780" height="1688" alt="Customer page on a phone" loading="lazy"><figcaption>Customer</figcaption></figure>
+  </div>
+ </div>
+</section>
+
+<section id="how" class="alt">
+ <div class="wrap">
+  <div class="shead rv"><span class="eyebrow">How it works</span><h2>It sits beside B1, on your own server.</h2><p class="lead">Pylon reads B1 through a read-only login, does the heavy analysis overnight and answers questions from its results and live lookups. The AI model runs on the server itself.</p></div>
+  <div class="flow rv">
+   <div class="card node"><h3><svg class="ico c-sales"><use href="#i-db"/></svg>SAP Business One</h3><p>Your B1 10.0 company databases on SQL Server. Nothing to install in B1.</p></div>
+   <div class="arrow"><svg class="ico"><use href="#i-arrow"/></svg>read-only</div>
+   <div class="card node core"><h3><svg class="ico c-acc"><use href="#i-server"/></svg>Pylon AI server</h3>
+    <ul><li>Nightly analysis: forecasts, red flags, cash and margins</li><li>Local AI model for chat; no outside AI service</li><li>Saved copy of B1 for when SAP is off</li><li>One chat service per company, kept apart</li></ul></div>
+   <div class="arrow"><svg class="ico"><use href="#i-arrow"/></svg>HTTPS</div>
+   <div class="card node"><h3><svg class="ico c-mgmt"><use href="#i-users"/></svg>Your people</h3><p>Chat, dashboard, reports and Inbox in the browser, on desktop or phone.</p></div>
+  </div>
+  <div class="day">
+   <div class="card rv"><span class="t">02:00</span><h3>Overnight</h3><p>Pull the day's changes from B1, then forecast, alerts, red-flag checks, finance and market watch, one company after another.</p></div>
+   <div class="card rv"><span class="t">07:00</span><h3>Morning</h3><p>The briefing is ready for management: what changed, what's at risk and what to decide today.</p></div>
+   <div class="card rv"><span class="t">Any time</span><h3>During the day</h3><p>People ask questions and open reports; Pylon answers from the night's results plus live B1 lookups.</p></div>
+  </div>
+ </div>
+</section>
+
+<section id="security">
+ <div class="wrap">
+  <div class="shead rv"><span class="eyebrow">Security and privacy</span><h2>Your data stays yours.</h2></div>
+  <div class="sec">
+   <div class="card rv"><svg class="ico"><use href="#i-server"/></svg><h3>On your own server</h3><p>B1 data and the AI model stay on your server. Questions and answers are not sent to an outside AI service.</p></div>
+   <div class="card rv"><svg class="ico"><use href="#i-eye"/></svg><h3>Read-only by default</h3><p>A read-only SQL login per company. B1 drafts are optional, need a person's yes, and are never posted automatically.</p></div>
+   <div class="card rv"><svg class="ico"><use href="#i-build"/></svg><h3>Each company kept apart</h3><p>Own login, own data folder, own chat service. People only see the companies they belong to.</p></div>
+   <div class="card rv"><svg class="ico"><use href="#i-key"/></svg><h3>Roles</h3><p>Sales, stock, money and management figures are shown only to the roles that should see them.</p></div>
+   <div class="card rv"><svg class="ico"><use href="#i-lock"/></svg><h3>Private chats</h3><p>A chat belongs to the person who wrote it. Admins manage users, not conversations.</p></div>
+   <div class="card rv"><svg class="ico"><use href="#i-shield"/></svg><h3>Hardened and tested</h3><p>HTTPS only, sign-in limits, server-side sessions, strict security headers and an automated security test suite.</p></div>
+  </div>
+ </div>
+</section>
+
+<section id="companies" class="alt">
+ <div class="wrap split">
+  <div class="shead rv"><span class="eyebrow">For groups</span><h2>Many companies, one place.</h2><p class="lead">One site for the whole group. People choose their company when they sign in, and each company keeps its own settings.</p>
+   <ul class="checks"><li><svg class="ico"><use href="#i-check"/></svg>Its own instructions: tone, language, focus, house terms</li><li><svg class="ico"><use href="#i-check"/></svg>Its own thresholds, critical items and market topics</li><li><svg class="ico"><use href="#i-check"/></svg>Add a company in minutes, without touching the others</li></ul>
+  </div>
+  <div class="cos rv" aria-label="Example: three companies in one group">
+   <div class="co"><span class="dot" style="background:#2f5f8a">HT</span><div><b>Harbour Trading</b><small>Distribution · 18 users</small></div><svg class="ico lk"><use href="#i-lock"/></svg></div>
+   <div class="co"><span class="dot" style="background:#2f7a45">RM</span><div><b>Ridgeline Manufacturing</b><small>Production · 24 users</small></div><svg class="ico lk"><use href="#i-lock"/></svg></div>
+   <div class="co"><span class="dot" style="background:#a5521f">MS</span><div><b>Meridian Services</b><small>Services · 9 users</small></div><svg class="ico lk"><use href="#i-lock"/></svg></div>
+   <p style="color:var(--faint);font-size:13.5px;margin-top:4px">Example names. Each company is locked to its own data.</p>
+  </div>
+ </div>
+</section>
+
+<section id="rollout">
+ <div class="wrap">
+  <div class="shead rv"><span class="eyebrow">Getting started</span><h2>From B1 login to first briefing.</h2></div>
+  <ol class="roll">
+   <li class="rv"><h3>Connect</h3><p>Your IT creates a read-only SQL login for each B1 company. Nothing changes in B1.</p></li>
+   <li class="rv"><h3>Install</h3><p>Pylon is set up on your server and runs its first nightly analysis.</p></li>
+   <li class="rv"><h3>Tune</h3><p>With your team: thresholds, critical items, roles and how the AI should talk.</p></li>
+   <li class="rv"><h3>Go live</h3><p>Short training, then the morning briefing starts. Support and updates continue.</p></li>
+  </ol>
+ </div>
+</section>
+
+<section id="plans" class="alt">
+ <div class="wrap">
+  <div class="shead rv"><span class="eyebrow">Plans</span><h2>Sized to your business.</h2><p class="lead">Every plan has every feature. You pay for the number of companies and people, not for extras.</p></div>
+  <div class="plans">
+   <div class="card plan rv"><span class="who">For one company</span><span class="size">Starter</span>
+    <ul><li><svg class="ico"><use href="#i-check"/></svg>1 company</li><li><svg class="ico"><use href="#i-check"/></svg>Up to 10 people</li><li><svg class="ico"><use href="#i-check"/></svg>Setup on your server</li><li><svg class="ico"><use href="#i-check"/></svg>Updates and email support</li></ul>
+    <a class="btn" href="mailto:idhamproaqw98@gmail.com?subject=Pylon%20AI%20quote%20(Starter)">Ask for a quote</a></div>
+   <div class="card plan hl rv"><span class="pill">Recommended</span><span class="size">Business</span>
+    <ul><li><svg class="ico"><use href="#i-check"/></svg>Up to 5 companies</li><li><svg class="ico"><use href="#i-check"/></svg>Up to 50 people</li><li><svg class="ico"><use href="#i-check"/></svg>Setup, tuning and training</li><li><svg class="ico"><use href="#i-check"/></svg>Updates and priority support</li></ul>
+    <a class="btn pri" href="mailto:idhamproaqw98@gmail.com?subject=Pylon%20AI%20quote%20(Business)">Ask for a quote</a></div>
+   <div class="card plan rv"><span class="who">For groups</span><span class="size">Group</span>
+    <ul><li><svg class="ico"><use href="#i-check"/></svg>10 or more companies</li><li><svg class="ico"><use href="#i-check"/></svg>150 people or more</li><li><svg class="ico"><use href="#i-check"/></svg>Server sizing and rollout plan</li><li><svg class="ico"><use href="#i-check"/></svg>Named contact and priority support</li></ul>
+    <a class="btn" href="mailto:idhamproaqw98@gmail.com?subject=Pylon%20AI%20quote%20(Group)">Ask for a quote</a></div>
+  </div>
+  <p class="allp rv">Not sure which fits? Try the demo first, then we'll size it with you.</p>
+ </div>
+</section>
+
+<section id="faq">
+ <div class="wrap">
+  <div class="shead rv"><span class="eyebrow">Questions</span><h2>Good to know.</h2></div>
+  <div class="faq rv">
+   <details><summary>Does Pylon AI change our B1 data?<svg class="ico"><use href="#i-plus"/></svg></summary><p>No. It reads B1 through a read-only SQL login. If you switch on B1 drafts, it can create a draft document only after a person replies yes to its preview; someone still opens the draft in B1, checks it and adds it.</p></details>
+   <details><summary>Does our data leave our building?<svg class="ico"><use href="#i-plus"/></svg></summary><p>B1 data, the analysis and the AI model all stay on your server; your data is not sent to an outside AI service. The optional market watch and web search only look up public information on the internet.</p></details>
+   <details><summary>What server do we need?<svg class="ico"><use href="#i-plus"/></svg></summary><p>A modern PC or server is enough to start; the reference setup is a 24-thread CPU with 32 GB of memory. We size it with you for the number of companies and people.</p></details>
+   <details><summary>Which SAP Business One versions are supported?<svg class="ico"><use href="#i-plus"/></svg></summary><p>SAP Business One 10.0 on Microsoft SQL Server. Ask us about other versions.</p></details>
+   <details><summary>Can it answer in our language and use our terms?<svg class="ico"><use href="#i-plus"/></svg></summary><p>Yes. Each company has its own instructions for tone, language, focus and house terms.</p></details>
+   <details><summary>Can we trust the numbers?<svg class="ico"><use href="#i-plus"/></svg></summary><p>Figures use B1's own definitions (for example gross profit as B1 calculates it) so they can be checked line by line against B1 reports. Every answer shows where it came from and how fresh the data is.</p></details>
+   <details><summary>Can we try it before we decide?<svg class="ico"><use href="#i-plus"/></svg></summary><p>Yes. Ask the demo a question right away, or open the full app as a guest for 24 hours. Both use SAP's sample company, not real customer data.</p></details>
+  </div>
+ </div>
+</section>
+
+<section id="contact" class="cta">
+ <div class="wrap">
+  <div class="card rv">
+   <svg class="mk" aria-hidden="true"><use href="#mark"/></svg>
+   <h2>See Pylon AI on your own B1 data.</h2>
+   <p>Book a 30-minute demo. We'll show it on the sample company, then talk about what it would find in yours.</p>
+   <div class="ctas" style="justify-content:center">
+    <a class="btn pri" href="mailto:idhamproaqw98@gmail.com?subject=Pylon%20AI%20demo"><svg class="ico"><use href="#i-mail"/></svg>Book a demo</a>
+    <a class="btn" href="https://archlinux.taila38d1a.ts.net:8443/sapb1/try" target="_blank" rel="noopener">Try the live demo<svg class="ico"><use href="#i-ext"/></svg></a>
+   </div>
+   <p class="mail">Or email <a href="mailto:idhamproaqw98@gmail.com">idhamproaqw98@gmail.com</a></p>
+  </div>
+ </div>
+</section>
+</main>
+
+<footer>
+ <div class="wrap">
+  <span>© 2026 Pylon AI</span>
+  <span>SAP and SAP Business One are trademarks of SAP SE. Pylon AI is not affiliated with or endorsed by SAP.</span>
+ </div>
+</footer>
+
+<dialog id="lb" aria-label="Enlarged screenshot"><button type="button" aria-label="Close"><svg class="ico"><use href="#i-x"/></svg></button><img alt=""></dialog>
+
+<script>
+(()=>{
+ const shell=document.querySelector('.shell');
+ const onScroll=()=>shell.classList.toggle('sc',scrollY>8);addEventListener('scroll',onScroll,{passive:true});onScroll();
+ // tabs
+ const tabs=[...document.querySelectorAll('.tab')];
+ const pick=t=>{tabs.forEach(x=>{const on=x===t;x.setAttribute('aria-selected',on);x.tabIndex=on?0:-1;document.getElementById(x.getAttribute('aria-controls')).hidden=!on});};
+ tabs.forEach((t,i)=>{t.tabIndex=i?-1:0;t.addEventListener('click',()=>pick(t));
+  t.addEventListener('keydown',e=>{const d=e.key==='ArrowRight'?1:e.key==='ArrowLeft'?-1:0;if(!d)return;const n=tabs[(i+d+tabs.length)%tabs.length];pick(n);n.focus();n.scrollIntoView({block:'nearest',inline:'nearest'})});});
+ // lightbox
+ const lb=document.getElementById('lb'),lbi=lb.querySelector('img');
+ document.querySelectorAll('.shot img,.phones img').forEach(img=>img.addEventListener('click',()=>{
+  const dark=matchMedia('(prefers-color-scheme: dark)').matches,src=img.currentSrc||img.src;
+  lbi.src=img.dataset.full&&!(dark&&src.includes('dark'))?img.dataset.full:src.replace('-960','');lbi.alt=img.alt;lb.showModal();}));
+ lb.addEventListener('click',e=>{if(e.target!==lbi)lb.close()});
+ // reveal
+ const els=document.querySelectorAll('.rv');
+ if('IntersectionObserver' in window&&!matchMedia('(prefers-reduced-motion: reduce)').matches){
+  const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{rootMargin:'0px 0px -8% 0px'});
+  els.forEach(e=>io.observe(e));
+ } else els.forEach(e=>e.classList.add('in'));
+})();
+</script>
+</body>
+</html>
