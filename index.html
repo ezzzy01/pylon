@@ -232,6 +232,8 @@ dialog#vd{padding:0;border:0;background:#000;width:min(1280px,94vw);max-width:94
 dialog#vd::backdrop{background:rgba(20,18,16,.85)}
 dialog#vd video{display:block;width:100%;height:auto;border-radius:14px;background:#000}
 .vclose{position:absolute;top:-56px;right:0;width:44px;height:44px;border-radius:50%;border:0;background:#fffefb;color:#2b2925;cursor:pointer;display:grid;place-items:center}
+@media (max-width:760px){dialog#vd{width:100vw;max-width:100vw;border-radius:0}dialog#vd::backdrop{background:#141210}dialog#vd video{border-radius:0}.vclose{right:12px}}
+.vhint{display:none}@media (max-width:760px) and (orientation:portrait){.vhint{display:block;position:absolute;left:0;right:0;top:calc(100% + 18px);text-align:center;color:#a8a299;font-size:14px;margin:0}}
 /* lightbox */
 dialog#lb{padding:0;border:0;background:transparent;max-width:min(1600px,96vw);max-height:94vh}
 dialog#lb::backdrop{background:rgba(20,18,16,.8)}
@@ -551,7 +553,7 @@ dialog#lb button{position:fixed;top:14px;right:14px;width:44px;height:44px;borde
 
 <div id="mbar" aria-label="Quick actions" inert><a class="btn" href="https://archlinux.taila38d1a.ts.net:8443/sapb1/try" target="_blank" rel="noopener">Try the demo</a><a class="btn pri" href="#contact">Book a demo</a></div>
 
-<dialog id="vd" aria-label="Pylon AI video"><button type="button" class="vclose" aria-label="Close video"><svg class="ico"><use href="#i-x"/></svg></button><video controls playsinline preload="none" poster="assets/video/poster.jpg" width="1920" height="1080"></video></dialog>
+<dialog id="vd" aria-label="Pylon AI video"><button type="button" class="vclose" aria-label="Close video"><svg class="ico"><use href="#i-x"/></svg></button><video controls playsinline preload="none" poster="assets/video/poster.jpg" width="1920" height="1080"></video><p class="vhint">Turn sideways for a bigger view</p></dialog>
 
 <dialog id="lb" aria-label="Enlarged screenshot"><button type="button" aria-label="Close"><svg class="ico"><use href="#i-x"/></svg></button><img alt=""></dialog>
 
@@ -573,7 +575,7 @@ dialog#lb button{position:fixed;top:14px;right:14px;width:44px;height:44px;borde
 
  // video
  const vd=document.getElementById('vd'),vv=vd.querySelector('video');
- document.querySelectorAll('[data-video]').forEach(b=>b.addEventListener('click',()=>{if(!vv.src){vv.preload='auto';vv.src='assets/video/pylon-ai.mp4'}vd.showModal();vv.play().catch(()=>{})}));
+ document.querySelectorAll('[data-video]').forEach(b=>b.addEventListener('click',()=>{if(!vv.src){vv.preload='auto';vv.src=matchMedia('(max-width:760px)').matches?'assets/video/pylon-ai-720.mp4':'assets/video/pylon-ai.mp4'}vd.showModal();vv.play().catch(()=>{})}));
  vd.addEventListener('close',()=>vv.pause());
  vd.addEventListener('click',e=>{if(e.target===vd||e.target.closest('.vclose'))vd.close()});
  // phone menu
