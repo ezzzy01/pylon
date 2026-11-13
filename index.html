@@ -177,7 +177,10 @@ section{padding:96px 0}
 
 /* plans */
 .plans{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;align-items:stretch}
-.plan{display:grid;gap:16px;grid-template-rows:auto auto 1fr auto}
+.plan{display:grid;gap:16px;grid-template-rows:auto auto auto 1fr auto}
+.plan .price{display:flex;align-items:baseline;gap:6px;flex-wrap:wrap;margin-top:-6px}
+.plan .price b{font:700 30px/1.1 var(--sans,inherit);color:var(--ink,inherit);letter-spacing:-.01em}
+.plan .price span{font-size:15px;color:var(--muted)}
 .plan.hl{border:2px solid var(--accent);box-shadow:var(--sh2)}
 .plan .who{font-size:14.5px;color:var(--muted)}
 .plan .size{font:600 26px var(--serif)}
@@ -498,17 +501,17 @@ dialog#lb button{position:fixed;top:14px;right:14px;width:44px;height:44px;borde
  <div class="wrap">
   <div class="shead rv"><span class="eyebrow">Plans</span><h2>Sized to your business.</h2><p class="lead">Every plan has every feature. You pay for the number of companies and people, not for extras.</p></div>
   <div class="plans swipe-m">
-   <div class="card plan rv"><span class="who">For one company</span><span class="size">Starter</span>
+   <div class="card plan rv"><span class="who">For one company</span><span class="size">Starter</span><span class="price"><b>RM 1,500</b><span>a month</span></span>
     <ul><li><svg class="ico"><use href="#i-check"/></svg>1 company</li><li><svg class="ico"><use href="#i-check"/></svg>Up to 10 people</li><li><svg class="ico"><use href="#i-check"/></svg>Setup on your server</li><li><svg class="ico"><use href="#i-check"/></svg>Updates and email support</li></ul>
-    <a class="btn" href="mailto:idhamproaqw98@gmail.com?subject=Pylon%20AI%20quote%20(Starter)">Ask for a quote</a></div>
-   <div class="card plan hl rv"><span class="pill">Recommended</span><span class="size">Business</span>
+    <a class="btn" href="mailto:idhamproaqw98@gmail.com?subject=Pylon%20AI%20(Starter)">Get Starter</a></div>
+   <div class="card plan hl rv"><span class="pill">Recommended</span><span class="size">Business</span><span class="price"><b>RM 4,500</b><span>a month</span></span>
     <ul><li><svg class="ico"><use href="#i-check"/></svg>Up to 5 companies</li><li><svg class="ico"><use href="#i-check"/></svg>Up to 50 people</li><li><svg class="ico"><use href="#i-check"/></svg>Setup, tuning and training</li><li><svg class="ico"><use href="#i-check"/></svg>Updates and priority support</li></ul>
-    <a class="btn pri" href="mailto:idhamproaqw98@gmail.com?subject=Pylon%20AI%20quote%20(Business)">Ask for a quote</a></div>
-   <div class="card plan rv"><span class="who">For groups</span><span class="size">Group</span>
+    <a class="btn pri" href="mailto:idhamproaqw98@gmail.com?subject=Pylon%20AI%20(Business)">Get Business</a></div>
+   <div class="card plan rv"><span class="who">For groups</span><span class="size">Group</span><span class="price"><span>from</span><b>RM 12,000</b><span>a month</span></span>
     <ul><li><svg class="ico"><use href="#i-check"/></svg>10 or more companies</li><li><svg class="ico"><use href="#i-check"/></svg>150 people or more</li><li><svg class="ico"><use href="#i-check"/></svg>Server sizing and rollout plan</li><li><svg class="ico"><use href="#i-check"/></svg>Named contact and priority support</li></ul>
-    <a class="btn" href="mailto:idhamproaqw98@gmail.com?subject=Pylon%20AI%20quote%20(Group)">Ask for a quote</a></div>
+    <a class="btn" href="mailto:idhamproaqw98@gmail.com?subject=Pylon%20AI%20(Group)">Talk to us</a></div>
   </div>
-  <p class="allp rv">Not sure which fits? Try the demo first, then we'll size it with you.</p>
+  <p class="allp rv">One-time setup on your server from RM 5,000. Not sure which fits? Try the demo first, then we'll size it with you.</p>
  </div>
 </section>
 
