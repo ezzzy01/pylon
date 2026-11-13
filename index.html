@@ -176,7 +176,7 @@ section{padding:96px 0}
 .roll p{color:var(--muted);font-size:15px}
 
 /* plans */
-.plans{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;align-items:stretch}
+.plans{display:grid;grid-template-columns:repeat(2,minmax(0,420px));justify-content:center;gap:20px;align-items:stretch}
 .plan{display:grid;gap:16px;grid-template-rows:auto auto auto 1fr auto}
 .plan .price{display:flex;align-items:baseline;gap:6px;flex-wrap:wrap;margin-top:-6px}
 .plan .price b{font:700 30px/1.1 var(--sans,inherit);color:var(--ink,inherit);letter-spacing:-.01em}
@@ -271,7 +271,7 @@ dialog#lb button{position:fixed;top:14px;right:14px;width:44px;height:44px;borde
  .swipe-m>*{scroll-snap-align:start;min-width:0}
  .swipe-m>.rv{opacity:1;transform:none}
  .phones.swipe-m{grid-auto-columns:56%;max-width:none}
- .plans.swipe-m{max-width:none;align-items:stretch;padding-top:8px}
+ .plans.swipe-m{max-width:none;align-items:stretch;padding-top:8px;justify-content:start}
  .sdots{display:flex;justify-content:center;gap:2px;margin-top:4px}
  .sdots i{width:16px;height:20px;display:grid;place-items:center}
  .sdots i::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--line2);transition:width .2s,background .2s}
@@ -356,7 +356,7 @@ dialog#lb button{position:fixed;top:14px;right:14px;width:44px;height:44px;borde
     <span><svg class="ico"><use href="#i-check"/></svg>SAP B1 10.0 on SQL Server</span>
     <span><svg class="ico"><use href="#i-check"/></svg>Runs on your own server</span>
     <span><svg class="ico"><use href="#i-check"/></svg>Read-only by default</span>
-    <span><svg class="ico"><use href="#i-check"/></svg>Many companies, one place</span>
+    <span><svg class="ico"><use href="#i-check"/></svg>Priced per user</span>
    </div>
   </div>
   <div class="stage">
@@ -445,12 +445,12 @@ dialog#lb button{position:fixed;top:14px;right:14px;width:44px;height:44px;borde
    <div class="card node"><h3><svg class="ico c-sales"><use href="#i-db"/></svg>SAP Business One</h3><p>Your B1 10.0 company databases on SQL Server. Nothing to install in B1.</p></div>
    <div class="arrow"><svg class="ico"><use href="#i-arrow"/></svg>read-only</div>
    <div class="card node core"><h3><svg class="ico c-acc"><use href="#i-server"/></svg>Pylon AI server</h3>
-    <ul><li>Nightly analysis: forecasts, red flags, cash and margins</li><li>Local AI model for chat; no outside AI service</li><li>Saved copy of B1 for when SAP is off</li><li>One chat service per company, kept apart</li></ul></div>
+    <ul><li>Nightly analysis: forecasts, red flags, cash and margins</li><li>Local AI model for chat; no outside AI service</li><li>Saved copy of B1 for when SAP is off</li><li>Its own chat service, kept apart</li></ul></div>
    <div class="arrow"><svg class="ico"><use href="#i-arrow"/></svg>HTTPS</div>
    <div class="card node"><h3><svg class="ico c-mgmt"><use href="#i-users"/></svg>Your people</h3><p>Chat, dashboard, reports and Inbox in the browser, on desktop or phone.</p></div>
   </div>
   <div class="day swipe-m">
-   <div class="card rv"><span class="t">02:00</span><h3>Overnight</h3><p>Pull the day's changes from B1, then forecast, alerts, red-flag checks, finance and market watch, one company after another.</p></div>
+   <div class="card rv"><span class="t">02:00</span><h3>Overnight</h3><p>Pull the day's changes from B1, then forecast, alerts, red-flag checks, finance and market watch.</p></div>
    <div class="card rv"><span class="t">07:00</span><h3>Morning</h3><p>The briefing is ready for management: what changed, what's at risk and what to decide today.</p></div>
    <div class="card rv"><span class="t">Any time</span><h3>During the day</h3><p>People ask questions and open reports; Pylon answers from the night's results plus live B1 lookups.</p></div>
   </div>
@@ -462,8 +462,8 @@ dialog#lb button{position:fixed;top:14px;right:14px;width:44px;height:44px;borde
   <div class="shead rv"><span class="eyebrow">Security and privacy</span><h2>Your data stays yours.</h2></div>
   <div class="sec swipe-m">
    <div class="card rv"><svg class="ico"><use href="#i-server"/></svg><h3>On your own server</h3><p>B1 data and the AI model stay on your server. Questions and answers are not sent to an outside AI service.</p></div>
-   <div class="card rv"><svg class="ico"><use href="#i-eye"/></svg><h3>Read-only by default</h3><p>A read-only SQL login per company. B1 drafts are optional, need a person's yes, and are never posted automatically.</p></div>
-   <div class="card rv"><svg class="ico"><use href="#i-build"/></svg><h3>Each company kept apart</h3><p>Own login, own data folder, own chat service. People only see the companies they belong to.</p></div>
+   <div class="card rv"><svg class="ico"><use href="#i-eye"/></svg><h3>Read-only by default</h3><p>A read-only SQL login to your B1 company. B1 drafts are optional, need a person's yes, and are never posted automatically.</p></div>
+   <div class="card rv"><svg class="ico"><use href="#i-build"/></svg><h3>Your own setup</h3><p>Your own logins, data folder and chat service, never shared with another client.</p></div>
    <div class="card rv"><svg class="ico"><use href="#i-key"/></svg><h3>Roles</h3><p>Sales, stock, money and management figures are shown only to the roles that should see them.</p></div>
    <div class="card rv"><svg class="ico"><use href="#i-lock"/></svg><h3>Private chats</h3><p>A chat belongs to the person who wrote it. Admins manage users, not conversations.</p></div>
    <div class="card rv"><svg class="ico"><use href="#i-shield"/></svg><h3>Hardened and tested</h3><p>HTTPS only, sign-in limits, server-side sessions, strict security headers and an automated security test suite.</p></div>
@@ -471,59 +471,42 @@ dialog#lb button{position:fixed;top:14px;right:14px;width:44px;height:44px;borde
  </div>
 </section>
 
-<section id="companies" class="alt">
- <div class="wrap split">
-  <div class="shead rv"><span class="eyebrow">For groups</span><h2>Many companies, one place.</h2><p class="lead">One site for the whole group. People choose their company when they sign in, and each company keeps its own settings.</p>
-   <ul class="checks"><li><svg class="ico"><use href="#i-check"/></svg>Its own instructions: tone, language, focus, house terms</li><li><svg class="ico"><use href="#i-check"/></svg>Its own thresholds, critical items and market topics</li><li><svg class="ico"><use href="#i-check"/></svg>Add a company in minutes, without touching the others</li></ul>
-  </div>
-  <div class="cos rv" aria-label="Example: three companies in one group">
-   <div class="co"><span class="dot" style="background:#2f5f8a">HT</span><div><b>Harbour Trading</b><small>Distribution · 18 users</small></div><svg class="ico lk"><use href="#i-lock"/></svg></div>
-   <div class="co"><span class="dot" style="background:#2f7a45">RM</span><div><b>Ridgeline Manufacturing</b><small>Production · 24 users</small></div><svg class="ico lk"><use href="#i-lock"/></svg></div>
-   <div class="co"><span class="dot" style="background:#a5521f">MS</span><div><b>Meridian Services</b><small>Services · 9 users</small></div><svg class="ico lk"><use href="#i-lock"/></svg></div>
-   <p style="color:var(--faint);font-size:13.5px;margin-top:4px">Example names. Each company is locked to its own data.</p>
-  </div>
- </div>
-</section>
-
-<section id="rollout">
+<section id="rollout" class="alt">
  <div class="wrap">
   <div class="shead rv"><span class="eyebrow">Getting started</span><h2>From B1 login to first briefing.</h2></div>
   <ol class="roll">
-   <li class="rv"><h3>Connect</h3><p>Your IT creates a read-only SQL login for each B1 company. Nothing changes in B1.</p></li>
-   <li class="rv"><h3>Install</h3><p>Pylon is set up on your server and runs its first nightly analysis.</p></li>
+   <li class="rv"><h3>Connect</h3><p>Your IT creates a read-only SQL login for your B1 company. Nothing changes in B1.</p></li>
+   <li class="rv"><h3>Install</h3><p>Pylon is set up on your server (or ours) and runs its first nightly analysis.</p></li>
    <li class="rv"><h3>Tune</h3><p>With your team: thresholds, critical items, roles and how the AI should talk.</p></li>
    <li class="rv"><h3>Go live</h3><p>Short training, then the morning briefing starts. Support and updates continue.</p></li>
   </ol>
  </div>
 </section>
 
-<section id="plans" class="alt">
+<section id="plans">
  <div class="wrap">
-  <div class="shead rv"><span class="eyebrow">Plans</span><h2>Sized to your business.</h2><p class="lead">Every plan has every feature. You pay for the number of companies and people, not for extras.</p></div>
+  <div class="shead rv"><span class="eyebrow">Plans</span><h2>Simple pricing, per user.</h2><p class="lead">For one company on SAP Business One. Every feature is included; you pay for the people who use it.</p></div>
   <div class="plans swipe-m">
-   <div class="card plan rv"><span class="who">For one company</span><span class="size">Starter</span><span class="price"><b>RM 1,500</b><span>a month</span></span>
-    <ul><li><svg class="ico"><use href="#i-check"/></svg>1 company</li><li><svg class="ico"><use href="#i-check"/></svg>Up to 10 people</li><li><svg class="ico"><use href="#i-check"/></svg>Setup on your server</li><li><svg class="ico"><use href="#i-check"/></svg>Updates and email support</li></ul>
-    <a class="btn" href="mailto:idhamproaqw98@gmail.com?subject=Pylon%20AI%20(Starter)">Get Starter</a></div>
-   <div class="card plan hl rv"><span class="pill">Recommended</span><span class="size">Business</span><span class="price"><b>RM 4,500</b><span>a month</span></span>
-    <ul><li><svg class="ico"><use href="#i-check"/></svg>Up to 5 companies</li><li><svg class="ico"><use href="#i-check"/></svg>Up to 50 people</li><li><svg class="ico"><use href="#i-check"/></svg>Setup, tuning and training</li><li><svg class="ico"><use href="#i-check"/></svg>Updates and priority support</li></ul>
-    <a class="btn pri" href="mailto:idhamproaqw98@gmail.com?subject=Pylon%20AI%20(Business)">Get Business</a></div>
-   <div class="card plan rv"><span class="who">For groups</span><span class="size">Group</span><span class="price"><span>from</span><b>RM 12,000</b><span>a month</span></span>
-    <ul><li><svg class="ico"><use href="#i-check"/></svg>10 or more companies</li><li><svg class="ico"><use href="#i-check"/></svg>150 people or more</li><li><svg class="ico"><use href="#i-check"/></svg>Server sizing and rollout plan</li><li><svg class="ico"><use href="#i-check"/></svg>Named contact and priority support</li></ul>
-    <a class="btn" href="mailto:idhamproaqw98@gmail.com?subject=Pylon%20AI%20(Group)">Talk to us</a></div>
+   <div class="card plan hl rv"><span class="pill">Recommended</span><span class="size">On your server</span><span class="price"><b>RM 150</b><span>per user, a month</span></span>
+    <ul><li><svg class="ico"><use href="#i-check"/></svg>Minimum 5 users</li><li><svg class="ico"><use href="#i-check"/></svg>Runs on your own PC or server with a GPU</li><li><svg class="ico"><use href="#i-check"/></svg>Your data never leaves your building</li><li><svg class="ico"><use href="#i-check"/></svg>Setup, tuning, training, updates and support</li></ul>
+    <a class="btn pri" href="mailto:idhamproaqw98@gmail.com?subject=Pylon%20AI%20(On%20your%20server)">Get started</a></div>
+   <div class="card plan rv"><span class="who">No server of your own</span><span class="size">Hosted by us</span><span class="price"><b>RM 1,500</b><span>a month</span><span>+ RM 150 per user</span></span>
+    <ul><li><svg class="ico"><use href="#i-check"/></svg>Minimum 5 users</li><li><svg class="ico"><use href="#i-check"/></svg>A private GPU server we run for you alone</li><li><svg class="ico"><use href="#i-check"/></svg>Nothing to buy or maintain</li><li><svg class="ico"><use href="#i-check"/></svg>Setup, tuning, training, updates and support</li></ul>
+    <a class="btn" href="mailto:idhamproaqw98@gmail.com?subject=Pylon%20AI%20(Hosted)">Talk to us</a></div>
   </div>
-  <p class="allp rv">One-time setup on your server from RM 5,000. Not sure which fits? Try the demo first, then we'll size it with you.</p>
+  <p class="allp rv">One-time setup from RM 5,000. Not sure which fits? Try the demo first, then we'll size it with you.</p>
  </div>
 </section>
 
-<section id="faq">
+<section id="faq" class="alt">
  <div class="wrap">
   <div class="shead rv"><span class="eyebrow">Questions</span><h2>Good to know.</h2></div>
   <div class="faq rv">
    <details><summary>Does Pylon AI change our B1 data?<svg class="ico"><use href="#i-plus"/></svg></summary><p>No. It reads B1 through a read-only SQL login. If you switch on B1 drafts, it can create a draft document only after a person replies yes to its preview; someone still opens the draft in B1, checks it and adds it.</p></details>
    <details><summary>Does our data leave our building?<svg class="ico"><use href="#i-plus"/></svg></summary><p>B1 data, the analysis and the AI model all stay on your server; your data is not sent to an outside AI service. The optional market watch and web search only look up public information on the internet.</p></details>
-   <details><summary>What server do we need?<svg class="ico"><use href="#i-plus"/></svg></summary><p>A modern PC or server is enough to start; the reference setup is a 24-thread CPU with 32 GB of memory. We size it with you for the number of companies and people.</p></details>
+   <details><summary>What server do we need?<svg class="ico"><use href="#i-plus"/></svg></summary><p>A modern PC or server with a graphics card (GPU) for the AI model; the reference setup is a 24-thread CPU with 32 GB of memory. We size it with you for the number of people. No server of your own? We can host it for you (see Plans).</p></details>
    <details><summary>Which SAP Business One versions are supported?<svg class="ico"><use href="#i-plus"/></svg></summary><p>SAP Business One 10.0 on Microsoft SQL Server. Ask us about other versions.</p></details>
-   <details><summary>Can it answer in our language and use our terms?<svg class="ico"><use href="#i-plus"/></svg></summary><p>Yes. Each company has its own instructions for tone, language, focus and house terms.</p></details>
+   <details><summary>Can it answer in our language and use our terms?<svg class="ico"><use href="#i-plus"/></svg></summary><p>Yes. You set the instructions for tone, language, focus and house terms.</p></details>
    <details><summary>Can we trust the numbers?<svg class="ico"><use href="#i-plus"/></svg></summary><p>Figures use B1's own definitions (for example gross profit as B1 calculates it) so they can be checked line by line against B1 reports. Every answer shows where it came from and how fresh the data is.</p></details>
    <details><summary>Can we try it before we decide?<svg class="ico"><use href="#i-plus"/></svg></summary><p>Yes. Ask the demo a question right away, or open the full app as a guest for 24 hours. Both use SAP's sample company, not real customer data.</p></details>
   </div>
